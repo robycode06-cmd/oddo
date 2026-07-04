@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/authContext';
 import api from '../../axios_api/axios';
+import AdminAttendanceTable from '../components/AdminAttendanceTable';
+import AdminLeaveTable from '../components/AdminLeaveTable';
 
 export default function AdminDashboard() {
   const { user, logout } = useAuth();
@@ -13,6 +15,7 @@ export default function AdminDashboard() {
   const [deleteConfirmId, setDeleteConfirmId] = useState(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [showPasswords, setShowPasswords] = useState({});
+  const [activeTab, setActiveTab] = useState('registry'); // 'registry', 'attendance', 'leaves'
 
   const togglePasswordVisibility = (id) => {
     setShowPasswords((prev) => ({ ...prev, [id]: !prev[id] }));

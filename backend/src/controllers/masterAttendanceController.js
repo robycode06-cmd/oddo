@@ -4,7 +4,7 @@ import Attendance from "../models/Attendance.js";
 // @desc    Get logged-in employee's attendance history
 // @access  Private
 
-const getMyAttendance =async (req, res) => {
+export const getMyAttendance =async (req, res) => {
     try {
         const records =await Attendance.find({employeeRef:req.user.id}).sort({date:-1});    // by newest first
         res.status(200).json({data:records});
@@ -18,7 +18,7 @@ const getMyAttendance =async (req, res) => {
 // @desc    Get all employees' attendance for a specific date (Defaults to today)
 // @access  Private/Admin
 
-const getAllAttendance =async (req,res) => {
+export const getAllAttendance =async (req,res) => {
     try {
 
         const dateQuery =req.query.date || new Date().toISOString().split('T')[0]  // YYYY-MM-DD format
@@ -33,5 +33,4 @@ const getAllAttendance =async (req,res) => {
         res.status(500).json({ error: 'Failed to fetch company attendance.' });
     }
 }
-
-module.exports = { getMyAttendance, getAllAttendance };
+

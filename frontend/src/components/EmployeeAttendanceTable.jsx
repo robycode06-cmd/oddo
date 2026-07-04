@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../axios_api/axios';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css'; 
-import { calculateHours } from '../../../utils/timeCalculator';
+import { calculateHours } from '../utils/timeCalculator';
 
-const EmployeeAttendanceTable = ({ token }) => {
+const EmployeeAttendanceTable = () => {
   const [records, setRecords] = useState([]);
   const [loading, setLoading] = useState(true);
   const [calendarDate, setCalendarDate] = useState(new Date());
@@ -17,11 +17,9 @@ const EmployeeAttendanceTable = ({ token }) => {
   useEffect(() => {
     const fetchMyAttendance = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/api/attendance/me', {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        const response = await api.get('/api/attendance/me');
         
-        const data = response.data;
+        const data = response.data.data || [];
         setRecords(data);
         
         // Calculate Metrics
@@ -40,7 +38,7 @@ const EmployeeAttendanceTable = ({ token }) => {
     };
 
     fetchMyAttendance();
-  }, [token]);
+  }, []);
 
   // Function to inject status dots into the calendar days
   const tileContent = ({ date, view }) => {
@@ -121,7 +119,7 @@ const EmployeeAttendanceTable = ({ token }) => {
               </thead>
               <tbody>
                 {records.map((record) => {
-                  const { workHours, extraHours } = calculateHours(record.checkIn, record.checkOut);
+                  const { workHours, extraHours } = calculateHours(record.checkInTime, record.checkOutTime);
                   return (
                     <tr key={record._id} className="border-b border-gray-700 hover:bg-[#252525]">
                       <td className="p-3">{record.date}</td>
@@ -133,8 +131,8 @@ const EmployeeAttendanceTable = ({ token }) => {
                           {record.status}
                         </span>
                       </td>
-                      <td className="p-3">{record.checkIn || '--:--'}</td>
-                      <td className="p-3">{record.checkOut || '--:--'}</td>
+                      <td className="p-3">{record.checkInTime || '--:--'}</td>
+                      <td className="p-3">{record.checkOutTime || '--:--'}</td>
                       <td className="p-3">{workHours}</td>
                       <td className="p-3 text-green-400">{extraHours !== '-' && extraHours !== '00:00' ? `+${extraHours}` : '-'}</td>
                     </tr>

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { calculateHours } from '../../../utils/timeCalculator';
+import api from '../../axios_api/axios';
+import { calculateHours } from '../utils/timeCalculator';
 
-const AdminAttendanceTable = ({ token }) => {
+const AdminAttendanceTable = () => {
   const [records, setRecords] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
@@ -14,10 +14,8 @@ const AdminAttendanceTable = ({ token }) => {
   const fetchAttendance = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`http://localhost:8000/api/attendance/all?date=${selectedDate}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setRecords(response.data);
+      const response = await api.get(`/api/attendance/all?date=${selectedDate}`);
+      setRecords(response.data.data || []);
     } catch (error) {
       console.error('Error fetching admin attendance:', error);
     } finally {
@@ -56,7 +54,7 @@ const AdminAttendanceTable = ({ token }) => {
           </thead>
           <tbody>
             {records.map((record) => {
-              const { workHours, extraHours } = calculateHours(record.checkIn, record.checkOut);
+              const { workHours, extraHours } = calculateHours(record.checkInTime, record.checkOutTime);
               return (
                 <tr key={record._id} className="border-b border-gray-700 hover:bg-[#252525]">
                   <td className="p-3">
@@ -70,8 +68,8 @@ const AdminAttendanceTable = ({ token }) => {
                       {record.status}
                     </span>
                   </td>
-                  <td className="p-3">{record.checkIn || '--:--'}</td>
-                  <td className="p-3">{record.checkOut || '--:--'}</td>
+                  <td className="p-3">{record.checkInTime || '--:--'}</td>
+                  <td className="p-3">{record.checkOutTime || '--:--'}</td>
                   <td className="p-3">{workHours}</td>
                   <td className="p-3 text-green-400">{extraHours !== '-' && extraHours !== '00:00' ? `+${extraHours}` : '-'}</td>
                 </tr>
