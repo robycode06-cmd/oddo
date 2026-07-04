@@ -1,11 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../../axios_api/axios';
 import EmployeeCard from './EmployeeCard';
-
-// Configure Axios globally to automatically attach cookies (like HttpOnly secure cookies)
-// to all outgoing cross-origin requests.
-axios.defaults.withCredentials = true;
 
 const EmployeeDashboard = () => {
   const navigate = useNavigate();
@@ -48,9 +44,7 @@ const EmployeeDashboard = () => {
         setError('');
 
         // Fetch all employees from the directory
-        const response = await axios.get(`${API_BASE_URL}/create`, {
-          withCredentials: true
-        });
+        const response = await api.get('/create');
         
         const employeeList = response.data || [];
         setEmployees(employeeList);
@@ -81,10 +75,9 @@ const EmployeeDashboard = () => {
       // Simulating a 1-second network latency delay before contacting backend
       await new Promise(resolve => setTimeout(resolve, 1000));
 
-      const response = await axios.post(
-        `${API_BASE_URL}/attendance/check-in`,
-        {},
-        { withCredentials: true }
+      const response = await api.post(
+        '/api/attendance/check-in',
+        {}
       );
 
       if (response.data.success) {
@@ -113,10 +106,9 @@ const EmployeeDashboard = () => {
       // Simulating a 1-second network latency delay before contacting backend
       await new Promise(resolve => setTimeout(resolve, 1000));
 
-      const response = await axios.post(
-        `${API_BASE_URL}/attendance/check-out`,
-        {},
-        { withCredentials: true }
+      const response = await api.patch(
+        '/api/attendance/check-out',
+        {}
       );
 
       if (response.data.success) {
@@ -286,7 +278,7 @@ const EmployeeDashboard = () => {
                 <button
                   onClick={async () => {
                     try {
-                      await axios.post(`${API_BASE_URL}/login/logout`, {}, { withCredentials: true });
+                      await api.post('/login/logout', {});
                     } catch (err) {
                       console.warn('Logout error', err);
                     }
