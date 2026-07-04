@@ -7,12 +7,7 @@ const App = () => {
 
   return (
     <>
-      <AdminLeaveTable token="" onNewRequest={() => setIsModalOpen(true)} />
-      <TimeOffModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        token=""
-      />
+    
     </>
   )
 }
