@@ -109,10 +109,17 @@ export const getAllEmployees = async (req, res) => {
   try {
     // Fetch all employees, selecting necessary fields (excluding passwords for safety)
     const employees = await Employee.find({}).select('-password');
-    res.status(200).json(employees);
+    // Wrapped in a structured response format to fit the frontend dashboard response parser
+    res.status(200).json({
+      success: true,
+      data: employees
+    });
   } catch (error) {
     console.error('Error fetching employees:', error);
-    res.status(500).json({ message: 'Error retrieving employee records.' });
+    res.status(500).json({ 
+      success: false, 
+      message: 'Error retrieving employee records.' 
+    });
   }
 };
 
@@ -139,5 +146,35 @@ export const deleteEmployee = async (req, res) => {
   } catch (error) {
     console.error('Error deleting employee:', error);
     res.status(500).json({ message: 'Internal server error during deletion.' });
+  }
+};
+
+export const getEmployeeById = async (req, res) => {
+  try {
+    const isStaff = req.user && (req.user.role === 'Admin' || req.user.role === 'HR');
+    let query = Employee.findById(req.params.id).select('-password');
+    if (!isStaff) {
+
+      query = query.select('-salary');
+    }
+    const employee = await query;
+
+    if (!employee) {
+      return res.status(404).json({
+        success: false,
+        message: 'Employee not found.'
+      });
+    }
+    return res.status(200).json({
+      success: true,
+      data: employee
+    });
+  } catch (error) {
+    console.error('Error fetching employee details:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Server error while fetching employee details.',
+      error: error.message
+    });
   }
 };
