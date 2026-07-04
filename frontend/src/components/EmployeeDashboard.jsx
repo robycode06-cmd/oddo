@@ -22,7 +22,7 @@ const EmployeeDashboard = () => {
   const loggedInUserId = localStorage.getItem('userId');
 
   // Base API URL config
-  const API_BASE_URL = 'http://localhost:5000/api';
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
 
   // Synchronize employee attendance state updates locally after successful check-in/out
   const updateStatusInState = (newStatus) => {
