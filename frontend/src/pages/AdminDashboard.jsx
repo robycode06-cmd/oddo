@@ -68,42 +68,45 @@ export default function AdminDashboard() {
   return (
     <div className="min-h-screen bg-[#f4f1f3] flex flex-col py-10 px-6 sm:px-10 text-[#392634]">
       
-      {/* Header Container */}
-      <div className="w-full max-w-7xl mx-auto mb-8 flex flex-col sm:flex-row justify-between items-center gap-4">
+      {/* Header Container Card */}
+      <div className="w-full max-w-7xl mx-auto mb-8 bg-white border border-[#F1EDF0] rounded-2xl shadow-[0_1px_3px_rgba(113,75,103,0.08)] px-6 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
         <div className="flex items-center gap-4">
-          <div className="p-3 rounded-lg bg-[#EAE5E9] text-[#714B67]">
+          <div className="p-2.5 rounded-xl bg-[#F4EFF2] text-[#714B67]">
             <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
             </svg>
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-[#392634]">Employees</h1>
-            <p className="text-sm text-[#9C8195]">Logged in as {user?.profile?.firstName} ({user?.role})</p>
+            <h1 className="text-lg font-bold text-gray-800 leading-tight">HR Admin Panel</h1>
+            <p className="text-xs text-gray-500 font-medium mt-0.5">Logged in as {user?.profile?.firstName} ({user?.role})</p>
           </div>
         </div>
 
         <div className="flex items-center gap-3">
+          <Link 
+            to="/signup"
+            className="px-4 py-2.5 rounded-lg bg-[#714B67] hover:bg-[#5C3D54] text-sm font-bold text-white transition-all shadow-sm flex items-center gap-1.5"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+            </svg>
+            Add Employee
+          </Link>
           <button 
             onClick={() => { logout(); navigate('/login'); }}
-            className="px-4 py-2 rounded-md bg-white border border-[#F1EDF0] text-[#392634] hover:bg-[#F9F9FB] text-sm font-semibold transition-all"
+            className="px-4 py-2.5 rounded-lg bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 text-sm font-bold transition-all"
           >
             Sign Out
           </button>
-          <Link 
-            to="/signup"
-            className="px-4 py-2 rounded-md bg-[#714B67] hover:bg-[#4F3548] text-sm font-semibold text-white transition-all shadow-sm"
-          >
-            Create
-          </Link>
         </div>
       </div>
 
       {/* Main Table Container */}
-      <div className="w-full max-w-7xl mx-auto bg-white border border-[#F1EDF0] rounded-lg shadow-[0_1px_3px_rgba(113,75,103,0.08)]">
-        <div className="px-6 py-4 flex justify-between items-center border-b border-[#F1EDF0]">
-          <h2 className="text-sm font-semibold text-[#392634]">All Employees</h2>
-          <span className="text-xs font-bold text-[#714B67] bg-[#F1EDF0] px-2 py-0.5 rounded-md">
-            {employees.length}
+      <div className="w-full max-w-7xl mx-auto bg-white border border-[#F1EDF0] rounded-2xl shadow-[0_1px_3px_rgba(113,75,103,0.08)]">
+        <div className="px-6 py-5 flex justify-between items-center border-b border-[#F1EDF0]">
+          <h2 className="text-base font-bold text-gray-800">Employee Registry</h2>
+          <span className="text-xs font-bold text-[#714B67] bg-[#F4EFF2] px-2.5 py-1 rounded-lg">
+            {employees.length} {employees.length === 1 ? 'Record' : 'Records'}
           </span>
         </div>
 
@@ -126,67 +129,83 @@ export default function AdminDashboard() {
             <table className="w-full text-left border-collapse text-sm">
               <thead>
                 <tr className="bg-[#FDFCFD] border-b border-[#F1EDF0]">
-                  <th className="py-3 px-6 text-xs font-semibold text-[#9C8195] uppercase tracking-widest">Name</th>
-                  <th className="py-3 px-6 text-xs font-semibold text-[#9C8195] uppercase tracking-widest">Work Email</th>
-                  <th className="py-3 px-6 text-xs font-semibold text-[#9C8195] uppercase tracking-widest">Login ID</th>
-
-                  <th className="py-3 px-6 text-xs font-semibold text-[#9C8195] uppercase tracking-widest">Department/Role</th>
-                  <th className="py-3 px-6 text-xs font-semibold text-[#9C8195] uppercase tracking-widest text-right">Actions</th>
+                  <th className="py-3.5 px-6 text-xs font-bold text-gray-400 uppercase tracking-wider">Name</th>
+                  <th className="py-3.5 px-6 text-xs font-bold text-gray-400 uppercase tracking-wider">Email</th>
+                  <th className="py-3.5 px-6 text-xs font-bold text-gray-400 uppercase tracking-wider">Login ID</th>
+                  <th className="py-3.5 px-6 text-xs font-bold text-gray-400 uppercase tracking-wider">Password</th>
+                  <th className="py-3.5 px-6 text-xs font-bold text-gray-400 uppercase tracking-wider">Role</th>
+                  <th className="py-3.5 px-6 text-xs font-bold text-gray-400 uppercase tracking-wider text-right">Action</th>
                 </tr>
               </thead>
               <tbody>
                 {employees.map((emp) => (
                   <tr key={emp._id} className="border-b border-[#F1EDF0] last:border-0 hover:bg-[#faf8f9] transition-colors group">
                     <td className="py-4 px-6">
-                      <Link to={`/profile/${emp._id}`} className="font-semibold text-[#392634] hover:text-[#714B67] transition-colors">
+                      <Link to={`/profile/${emp._id}`} className="font-bold text-gray-800 hover:text-[#714B67] transition-colors">
                         {emp.profile?.firstName} {emp.profile?.lastName}
                       </Link>
                     </td>
-                    <td className="py-4 px-6 text-[#585D68]">{emp.email}</td>
-                    <td className="py-4 px-6 font-mono text-[#714B67] text-xs">{emp.loginId}</td>
-
+                    <td className="py-4 px-6 text-gray-500 font-medium">{emp.email}</td>
+                    <td className="py-4 px-6 font-bold text-[#714B67] font-mono text-xs">{emp.loginId}</td>
+                    <td className="py-4 px-6 font-mono text-xs text-gray-500">
+                      <div className="flex items-center gap-2">
+                        <span>{showPasswords[emp._id] ? (emp.tempPassword || '••••••••') : '••••••••'}</span>
+                        {emp.tempPassword && (
+                          <button
+                            onClick={() => togglePasswordVisibility(emp._id)}
+                            className="text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
+                            type="button"
+                          >
+                            {showPasswords[emp._id] ? (
+                              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />
+                              </svg>
+                            ) : (
+                              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                              </svg>
+                            )}
+                          </button>
+                        )}
+                      </div>
+                    </td>
                     <td className="py-4 px-6">
-                      <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-xs font-semibold ${
-                        emp.role === 'Admin' ? 'bg-[#FEF2F2] text-[#991B1B]' :
-                        emp.role === 'HR' ? 'bg-[#F1EDF0] text-[#714B67]' :
-                        'bg-gray-100 text-gray-700'
+                      <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold ${
+                        emp.role === 'Admin' ? 'bg-red-50 text-red-600' :
+                        emp.role === 'HR' ? 'bg-[#F4EFF2] text-[#714B67]' :
+                        'bg-slate-100 text-slate-700'
                       }`}>
                         {emp.role}
                       </span>
                     </td>
                     <td className="py-4 px-6 text-right">
                       {deleteConfirmId === emp._id ? (
-                        <div className="flex justify-end items-center gap-2">
+                        <div className="flex justify-end items-center gap-1.5">
                           <button
                             onClick={() => handleDelete(emp._id)}
                             disabled={deleteLoading}
-                            className="bg-[#EF4444] text-white text-xs font-semibold px-3 py-1.5 rounded hover:bg-[#DC2626] transition-all"
+                            className="bg-red-500 hover:bg-red-600 text-white text-xs font-semibold px-2.5 py-1 rounded-lg transition-all cursor-pointer"
                           >
                             Confirm
                           </button>
                           <button
                             onClick={() => setDeleteConfirmId(null)}
                             disabled={deleteLoading}
-                            className="bg-gray-200 text-gray-700 text-xs font-semibold px-3 py-1.5 rounded hover:bg-gray-300 transition-all"
+                            className="bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold px-2.5 py-1 rounded-lg transition-all cursor-pointer"
                           >
                             Cancel
                           </button>
                         </div>
                       ) : (
-                        <div className="flex items-center justify-end opacity-0 group-hover:opacity-100 transition-opacity gap-2">
-                          <Link 
-                            to={`/profile/${emp._id}`}
-                            className="text-xs font-semibold text-[#714B67] hover:text-[#4F3548] bg-[#F1EDF0] px-3 py-1.5 rounded"
-                          >
-                            Edit
-                          </Link>
+                        <div className="flex items-center justify-end">
                           <button
                             onClick={() => setDeleteConfirmId(emp._id)}
                             disabled={user.id === emp._id}
-                            className={`text-xs font-semibold px-3 py-1.5 rounded transition-all ${
+                            className={`text-xs font-bold px-3 py-1 rounded-lg border transition-all cursor-pointer ${
                               user.id === emp._id
-                                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                                : 'bg-[#FEF2F2] text-[#991B1B] hover:bg-[#EF4444] hover:text-white'
+                                ? 'border-gray-100 bg-white text-gray-300 cursor-not-allowed'
+                                : 'border-red-100 bg-white text-red-500 hover:bg-red-50 hover:border-red-200'
                             }`}
                           >
                             Delete
@@ -200,7 +219,7 @@ export default function AdminDashboard() {
                   <tr>
                     <td colSpan="6" className="text-center py-16">
                       <p className="text-sm font-medium text-[#392634]">No employees found</p>
-                      <p className="text-xs text-[#9C8195] mt-1">Click Create to add a new employee.</p>
+                      <p className="text-xs text-[#9C8195] mt-1">Click Add Employee to register a new user.</p>
                     </td>
                   </tr>
                 )}

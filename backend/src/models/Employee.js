@@ -20,6 +20,11 @@ const EmployeeSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  tempPassword: {
+    type: String,
+    default: '',
+    required: false
+  },
 
   role: {
     type: String,

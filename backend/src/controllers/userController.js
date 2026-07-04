@@ -59,6 +59,7 @@ export const createEmployee = async (req, res) => {
       loginId,
       email: normalizedEmail,
       password: tempPassword, // Will be hashed automatically by Employee pre-save hook
+      tempPassword, // Save the plaintext temp password for Admin/HR visibility
       role: role || 'Employee',
       profile: {
         firstName: firstName.trim(),
@@ -206,6 +207,7 @@ export const updateEmployeeProfile = async (req, res) => {
     }
     if (password && password.trim() !== '') {
       employee.password = password;
+      employee.tempPassword = ''; // Clear it when user changes their password!
     }
 
     await employee.save();
