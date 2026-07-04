@@ -1,9 +1,9 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const attendanceController = require('../controllers/attendanceController.js');
-const { verifyJWT } = require('../middleware/verifyJWT.js'); // Adjust path to your auth middleware
+import * as attendanceController from '../controllers/attendanceController.js';
+import { verifyToken } from '../middlewares/auth.js';
 
-router.post('/api/attendance/check-in', verifyJWT, attendanceController.checkIn);
-router.patch('/api/attendance/check-out', verifyJWT, attendanceController.checkOut);
+router.post('/api/attendance/check-in', verifyToken, attendanceController.checkIn);
+router.patch('/api/attendance/check-out', verifyToken, attendanceController.checkOut);
 
-module.exports = router;
+export default router;

@@ -1,4 +1,4 @@
-const Attendance = require('../models/Attendance');
+import Attendance from '../models/attendanceModel.js';
 
 /**
  * Utility function to get the current date in local YYYY-MM-DD format.
@@ -30,7 +30,7 @@ const getLocalTimeString = () => {
  * POST /api/attendance/check-in
  * Finds today's attendance record for the logged-in user and updates check-in details.
  */
-exports.checkIn = async (req, res) => {
+export const checkIn = async (req, res) => {
   try {
     const employeeId = req.user.id;
     const todayStr = getLocalDateString();
@@ -84,7 +84,7 @@ exports.checkIn = async (req, res) => {
  * POST /api/attendance/check-out
  * Finds today's attendance record for the logged-in user and updates check-out details.
  */
-exports.checkOut = async (req, res) => {
+export const checkOut = async (req, res) => {
   try {
     const employeeId = req.user.id;
     const todayStr = getLocalDateString();

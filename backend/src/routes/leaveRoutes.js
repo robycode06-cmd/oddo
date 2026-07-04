@@ -1,7 +1,7 @@
 import express from 'express'
 const router=express.Router();
-import { createLeaveRequest, getAllLeaveRequests, updateLeaveStatus } from '../controllers/leaveController'
-import { verifyToken, verifyAdmin } from '../middlewares/authMiddleware'   // for middleware used
+import { createLeaveRequest, getAllLeaveRequests, updateLeaveStatus } from '../controllers/leaveController.js';
+import { verifyToken, verifyAdminOrHR as verifyAdmin } from '../middlewares/auth.js';
 
 // import upload from '../middlewares/uploadMiddleware'; // Assuming multer is setup
 
@@ -12,4 +12,4 @@ router.post('/request', verifyToken,createLeaveRequest);
 router.get('/all', verifyToken, verifyAdmin, getAllLeaveRequests);
 router.put('/status/:id', verifyToken, verifyAdmin, updateLeaveStatus);
 
-module.exports = router;
+export default router;

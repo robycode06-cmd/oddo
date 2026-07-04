@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import EmployeeCard from '../../components/EmployeeCard';
+import EmployeeCard from './EmployeeCard';
 
 // Configure Axios globally to automatically attach cookies (like HttpOnly secure cookies)
 // to all outgoing cross-origin requests.
@@ -22,7 +22,7 @@ const EmployeeDashboard = () => {
   const loggedInUserId = localStorage.getItem('userId');
 
   // Base API URL config
-  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api';
 
   // Synchronize employee attendance state updates locally after successful check-in/out
   const updateStatusInState = (newStatus) => {

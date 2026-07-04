@@ -34,4 +34,4 @@ const  LeaveRequestSchema= new mongoose.Schema({
     }
 },{timestamps:true});
 
-module.exports=mongoose.model('LeaveRequest',LeaveRequestSchema);
+export default mongoose.model('LeaveRequest',LeaveRequestSchema);

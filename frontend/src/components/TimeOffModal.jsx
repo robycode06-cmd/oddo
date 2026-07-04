@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../../axios_api/axios';
 
 const TimeOffModal = ({ isOpen, onClose, token }) => {
 
@@ -34,9 +34,8 @@ const TimeOffModal = ({ isOpen, onClose, token }) => {
         if(File) data.append('attachment', File);
 
         try {
-            await axios.post('http://localhost:8000/api/leave/request', data, {
+            await api.post('/api/leave/request', data, {
                 headers: {
-                    Authorization: `Bearer ${token}`,
                     'Content-Type': 'multipart/form-data'
                 }
             });

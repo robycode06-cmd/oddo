@@ -67,4 +67,5 @@ const updateLeaveStatus=async(req,res)=>{
     }
 }
 
-module.exports={createLeaveRequest, getAllLeaveRequests, updateLeaveStatus};
+export  {createLeaveRequest, getAllLeaveRequests, updateLeaveStatus};
+

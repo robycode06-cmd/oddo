@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../axios_api/axios';
 
-const AdminLeaveTable = ({ token }) => {
+const AdminLeaveTable = () => {
   const [leaveData, setLeaveData] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -11,9 +11,7 @@ const AdminLeaveTable = ({ token }) => {
 
   const fetchLeaveRequests = async () => {
     try {
-      const response = await axios.get('http://localhost:8000/api/leave/all', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const response = await api.get('/api/leave/all');
       setLeaveData(response.data);
     } catch (error) {
       console.error('Error fetching leave requests:', error);
@@ -24,10 +22,7 @@ const AdminLeaveTable = ({ token }) => {
 
   const handleUpdateStatus = async (id, newStatus) => {
     try {
-      await axios.put(`http://localhost:8000/api/leave/status/${id}`, 
-        { status: newStatus },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      await api.put(`/api/leave/status/${id}`, { status: newStatus });
       setLeaveData(prevData => 
         prevData.map(req => 
           req._id === id ? { ...req, status: newStatus } : req

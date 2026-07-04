@@ -24,8 +24,8 @@ const seedInitialAdmin = async () => {
       
       const defaultAdmin = new Employee({
         loginId: 'ADMI20260001', // Custom ID format for the Admin
-        email: 'admin@company.com',
-        password: 'AdminPassword123', // Will be hashed automatically by the pre-save schema hook
+        email: process.env.ADMIN_EMAIL || 'admin@company.com',
+        password: process.env.ADMIN_PASSWORD || 'AdminPassword123', // Will be hashed automatically by the pre-save schema hook
         role: 'Admin',
         profile: {
           firstName: 'System',
@@ -44,7 +44,8 @@ const seedInitialAdmin = async () => {
       console.log('----------------------------------------------------');
       console.log('Default Admin Seeded Successfully!');
       console.log('Login ID: ADMI20260001');
-      console.log('Password: AdminPassword123');
+      console.log(`Email: ${process.env.ADMIN_EMAIL || 'admin@company.com'}`);
+      console.log(`Password: ${process.env.ADMIN_PASSWORD || 'AdminPassword123'}`);
       console.log('----------------------------------------------------');
     } else {
       console.log('Admin user already exists. Seeding skipped.');

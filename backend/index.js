@@ -5,7 +5,8 @@ import cors from "cors";
 import user_router from "./src/routes/userSignup.js";
 import login_router from "./src/routes/login_route.js";
 import cookieParser from "cookie-parser";
-
+import attendance_router from "./src/routes/userRoutes.js";
+import leave_router from "./src/routes/leaveRoutes.js";
 
 
 //config
@@ -20,13 +21,15 @@ connectDB(process.env.URL)
 const app = express();
 
 //middlewares
-app.use(cors({origin: 'http://localhost:5173',credentials: true}));
+app.use(cors({origin: ['http://localhost:5173', 'http://localhost:5174'], credentials: true}));
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({extended:false}));
 app.use('/create',user_router);
 app.use('/login',login_router)
 
-
+app.use('/api/attendance', attendance_router);
+app.use('/api/leave', leave_router);
 
 
 //listener
