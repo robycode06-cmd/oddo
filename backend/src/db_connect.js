@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import Employee from './model/Employee.js';
+import Employee from './models/Employee.js';
 
 export const connectDB = async () => {
   try {
@@ -25,13 +25,13 @@ const seedInitialAdmin = async () => {
       const defaultAdmin = new Employee({
         loginId: 'ADMI20260001', // Custom ID format for the Admin
         email: 'admin@company.com',
-        password: 'AdminPassword123', // Will be hashed automatically by the pre-save schema hook
+        password: 'AdminPassword123', // apne aap hash ho jaega
         role: 'Admin',
         profile: {
           firstName: 'System',
           lastName: 'Admin',
           address: 'Headquarters',
-          phone: '+1-000-0000'
+          phone: '+91 8955315275'
         },
         salary: {
           base: 10000,
