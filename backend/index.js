@@ -30,6 +30,7 @@ app.use('/login',login_router)
 
 app.use('/api/attendance', attendance_router);
 app.use('/api/leave', leave_router);
+app.use('/uploads', express.static('uploads'));
 
 
 //listener

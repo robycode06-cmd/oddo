@@ -12,13 +12,18 @@ const EmployeeProfile = ({ currentUser, onProfileUpdated }) => {
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
-  // Tabs layout settings based on roles
+  // Tabs layout settings based on roles and ownership
+  const isOwner = currentUser?.id === id || currentUser?._id === id;
   const isStaff = currentUser?.role === 'Admin' || currentUser?.role === 'HR';
-  const tabs = isStaff 
-    ? ['Resume', 'Private Info', 'Salary Info', 'Security']
-    : ['Resume', 'Private Info'];
+  
+  let tabs = ['Resume'];
+  if (isStaff) {
+    tabs = ['Resume', 'Private Info', 'Salary Info', 'Security'];
+  } else if (isOwner) {
+    tabs = ['Resume', 'Private Info', 'Security'];
+  }
 
-  const [activeTab, setActiveTab] = useState('Private Info');
+  const [activeTab, setActiveTab] = useState('Resume');
 
   // Form State - Private Info
   const [address, setAddress] = useState('');
@@ -57,7 +62,7 @@ const EmployeeProfile = ({ currentUser, onProfileUpdated }) => {
   }, [id]);
 
   useEffect(() => {
-    if (!tabs.includes(activeTab)) setActiveTab('Private Info');
+    if (!tabs.includes(activeTab)) setActiveTab('Resume');
   }, [currentUser]);
 
   const handleUpdatePrivateInfo = async (e) => {
@@ -300,7 +305,7 @@ const EmployeeProfile = ({ currentUser, onProfileUpdated }) => {
             />
           )}
 
-          {activeTab === 'Security' && isStaff && (
+          {activeTab === 'Security' && (isStaff || isOwner) && (
             <div className="bg-white rounded-xl border border-[#F1EDF0] shadow-sm overflow-hidden">
               <div className="px-6 py-4 border-b border-[#F1EDF0] bg-[#FDFCFD]">
                 <h2 className="text-sm font-semibold text-[#392634]">Security Settings</h2>

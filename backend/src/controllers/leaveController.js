@@ -12,7 +12,7 @@ const createLeaveRequest=async (req,res)=>{
 
         const newRequest=new leaveRequest({
             employeeRef:req.user.id,
-            leaveType,
+            leaveType: leaveType ? leaveType.toLowerCase() : '',
             startDate,
             endDate,
             allocatedDays,
@@ -23,6 +23,7 @@ const createLeaveRequest=async (req,res)=>{
 
          res.status(201).json({message:'Leave request submitted successfully.',data:newRequest});
        }catch(error){
+         console.error('Error in createLeaveRequest:', error);
          res.status(500).json({error:'Failed to submit leave requests.'});
        }
        
@@ -36,7 +37,10 @@ const getAllLeaveRequests=async (req,res)=>{
          const requests= await leaveRequest.find()
          .populate('employeeRef','profile.firstName profile.lastName loginId')
          .sort({createdAt:-1});
+         
+         res.status(200).json({ success: true, data: requests });
       }catch(error){
+        console.error('Error in getAllLeaveRequests:', error);
         res.status(500).json({ error: 'Failed to fetch leave requests.' });
       }
 }
