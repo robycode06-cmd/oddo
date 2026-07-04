@@ -1,4 +1,4 @@
-const Attendance = require('../model/Attendance');
+const Attendance = require('../models/Attendance');
 
 /**
  * Utility function to get the current date in local YYYY-MM-DD format.

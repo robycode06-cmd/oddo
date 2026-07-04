@@ -1,4 +1,4 @@
-const Employee = require('../model/Employee');
+const Employee = require('../models/Employee');
 
 /**
  * PUT /api/users/profile/:id
