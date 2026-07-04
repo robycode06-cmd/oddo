@@ -1,4 +1,4 @@
-import Employee from '../model/Employee.js';
+import Employee from '../models/Employee.js';
 import jwt from 'jsonwebtoken';
 
 /**
