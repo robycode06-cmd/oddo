@@ -12,7 +12,7 @@ const AdminLeaveTable = () => {
   const fetchLeaveRequests = async () => {
     try {
       const response = await api.get('/api/leave/all');
-      setLeaveData(response.data);
+      setLeaveData(response.data.data || []);
     } catch (error) {
       console.error('Error fetching leave requests:', error);
     } finally {
