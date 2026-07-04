@@ -3,7 +3,7 @@ import { Route, Routes, Navigate } from 'react-router-dom'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
 import AdminDashboard from './pages/AdminDashboard' // <-- Import the new AdminDashboard page
-
+import { useAuth } from './context/authContext'
 
 // Simple placeholder for normal employee view
 const EmployeeDashboard = () => (
@@ -16,11 +16,33 @@ const EmployeeDashboard = () => (
 );
 
 const App = () => {
+  const { user } = useAuth();
+
+  const getDashboardPath = (role) => {
+    return role === 'Admin' || role === 'HR' ? '/admin-dashboard' : '/dashboard';
+  };
+
   return (
     <div>
       <Routes>
-        <Route path="/" element={<Navigate to="/login" replace />} />
-        <Route path="/login" element={<Login />} />
+        <Route 
+          path="/" 
+          element={
+            user 
+              ? <Navigate to={getDashboardPath(user.role)} replace /> 
+              : <Navigate to="/login" replace />
+          } 
+        />
+        
+        <Route 
+          path="/login" 
+          element={
+            user 
+              ? <Navigate to={getDashboardPath(user.role)} replace /> 
+              : <Login />
+          } 
+        />
+        
         <Route path="/signup" element={<Signup />} />
         
         

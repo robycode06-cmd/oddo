@@ -1,5 +1,6 @@
-import Employee from '../model/Employee.js';
+import Employee from '../models/Employee.js';
 import crypto from 'crypto';
+
 
 /**
  * Admin/HR route to register new employees
