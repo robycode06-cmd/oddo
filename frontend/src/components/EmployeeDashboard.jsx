@@ -4,9 +4,11 @@ import api from '../../axios_api/axios';
 import EmployeeCard from './EmployeeCard';
 import EmployeeAttendanceTable from './EmployeeAttendanceTable';
 import TimeOffModal from './TimeOffModal';
+import { useAuth } from '../context/authContext';
 
 const EmployeeDashboard = () => {
   const navigate = useNavigate();
+  const { user: authUser, logout } = useAuth();
 
   // Production Setup: Initialize state as empty/null, completely independent of local mock data
   const [employees, setEmployees] = useState([]);
@@ -22,7 +24,7 @@ const EmployeeDashboard = () => {
   const [searchQuery, setSearchQuery] = useState('');
 
   // Retrieve user identity from storage (JWT is stored in an HttpOnly secure cookie)
-  const loggedInUserId = localStorage.getItem('userId');
+  const loggedInUserId = authUser?.id;
 
   // Base API URL config
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api';
@@ -292,12 +294,7 @@ const EmployeeDashboard = () => {
                 {/* Logout Button */}
                 <button
                   onClick={async () => {
-                    try {
-                      await api.post('/login/logout', {});
-                    } catch (err) {
-                      console.warn('Logout error', err);
-                    }
-                    localStorage.removeItem('userId');
+                    await logout();
                     navigate('/login');
                   }}
                   className="inline-flex items-center bg-rose-600 hover:bg-rose-700 text-white px-4 py-1.5 rounded-lg text-xs font-bold transition-all shadow-sm active:scale-95 cursor-pointer"
