@@ -1,8 +1,55 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
+import Employee from './model/Employee.js';
 
-async function connectDB(url) {
+export const connectDB = async () => {
+  try {
+    const conn = await mongoose.connect(process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/hrms');
+    console.log(`MongoDB Connected: ${conn.connection.host}`);
     
-    return mongoose.connect(url);
-}
+    // Seed initial Admin
+    await seedInitialAdmin();
+  } catch (error) {
+    console.error(`Database connection error: ${error.message}`);
+    process.exit(1);
+  }
+};
 
-export default connectDB;
+const seedInitialAdmin = async () => {
+  try {
+    // Check if an Admin already exists
+    const adminExists = await Employee.findOne({ role: 'Admin' });
+    
+    if (!adminExists) {
+      console.log('No Admin user found. Seeding default Admin...');
+      
+      const defaultAdmin = new Employee({
+        loginId: 'ADMI20260001', // Custom ID format for the Admin
+        email: 'admin@company.com',
+        password: 'AdminPassword123', // Will be hashed automatically by the pre-save schema hook
+        role: 'Admin',
+        profile: {
+          firstName: 'System',
+          lastName: 'Admin',
+          address: 'Headquarters',
+          phone: '+1-000-0000'
+        },
+        salary: {
+          base: 10000,
+          hra: 3000,
+          allowances: 2000
+        }
+      });
+
+      await defaultAdmin.save();
+      console.log('----------------------------------------------------');
+      console.log('Default Admin Seeded Successfully!');
+      console.log('Login ID: ADMI20260001');
+      console.log('Password: AdminPassword123');
+      console.log('----------------------------------------------------');
+    } else {
+      console.log('Admin user already exists. Seeding skipped.');
+    }
+  } catch (error) {
+    console.error('Error seeding admin:', error);
+  }
+};
