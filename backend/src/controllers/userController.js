@@ -105,6 +105,7 @@ export const createEmployee = async (req, res) => {
  * Fetch all registered employees
  * GET /create
  */
+
 export const getAllEmployees = async (req, res) => {
   try {
     // Fetch all employees, selecting necessary fields (excluding passwords for safety)
