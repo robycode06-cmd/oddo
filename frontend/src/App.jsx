@@ -3,11 +3,17 @@ import TimeOffModal from './components/TimeOffModal'
 import AdminLeaveTable from './components/AdminLeaveTable'
 
 const App = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
 
   return (
-    <>
     
+    <>
+      <AdminLeaveTable />
+      <TimeOffModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)} 
+      />
+
     </>
   )
 }
