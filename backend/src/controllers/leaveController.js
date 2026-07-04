@@ -1,4 +1,4 @@
-import leaveRequest from "../model/LeaveRequest.js";
+import leaveRequest from '../models/LeaveRequest.js';
 
 // @route POST /api/leave/request
 // @desc Create a new leave request

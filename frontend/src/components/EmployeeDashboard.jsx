@@ -47,26 +47,16 @@ const EmployeeDashboard = () => {
         setLoading(true);
         setError('');
 
-        /* ==========================================================
-           CORE LOGIC FOR FETCHING DIRECTORY LIST AND CURRENT USER
-           ==========================================================
-           TODO: Implement the API fetch request here.
-           Example implementation:
+        // Fetch all employees from the directory
+        const response = await axios.get(`${API_BASE_URL}/create`, {
+          withCredentials: true
+        });
+        
+        const employeeList = response.data || [];
+        setEmployees(employeeList);
 
-           const response = await axios.get(`${API_BASE_URL}/users`, {
-             withCredentials: true
-           });
-           
-           const employeeList = response.data.data || response.data || [];
-           setEmployees(employeeList);
-
-           const activeUser = employeeList.find(emp => emp._id === loggedInUserId) || employeeList[0];
-           setCurrentUser(activeUser);
-        */
-
-        // Production Initializer: Initialize empty list
-        setEmployees([]);
-        setCurrentUser(null);
+        const activeUser = employeeList.find(emp => emp._id === loggedInUserId) || null;
+        setCurrentUser(activeUser);
 
       } catch (err) {
         console.error('Error fetching dashboard data:', err);
@@ -296,12 +286,12 @@ const EmployeeDashboard = () => {
                 <button
                   onClick={async () => {
                     try {
-                      await axios.post(`${API_BASE_URL}/users/logout`, {}, { withCredentials: true });
+                      await axios.post(`${API_BASE_URL}/login/logout`, {}, { withCredentials: true });
                     } catch (err) {
-                      console.warn('Backend unconfigured, clearing user local state');
+                      console.warn('Logout error', err);
                     }
                     localStorage.removeItem('userId');
-                    alert('[Skeleton Action] Logging out employee...');
+                    navigate('/login');
                   }}
                   className="inline-flex items-center bg-rose-600 hover:bg-rose-700 text-white px-4 py-1.5 rounded-lg text-xs font-bold transition-all shadow-sm active:scale-95 cursor-pointer"
                 >
@@ -331,22 +321,7 @@ const EmployeeDashboard = () => {
         )}
 
         {/* Search & Actions Bar */}
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 bg-white p-4 rounded-xl border border-slate-200 shadow-sm mb-8">
-          
-          <button
-            onClick={() => {
-              alert('[Skeleton Action] Create/Add New Employee modal will open here.');
-            }}
-            style={{ backgroundColor: '#875A7B' }}
-            onMouseOver={(e) => e.target.style.backgroundColor = '#714B67'}
-            onMouseOut={(e) => e.target.style.backgroundColor = '#875A7B'}
-            className="flex items-center justify-center gap-1.5 text-white px-5 py-2 rounded-lg text-sm font-bold shadow-sm transition-all active:scale-95 cursor-pointer"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-            </svg>
-            New
-          </button>
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-4 bg-white p-4 rounded-xl border border-slate-200 shadow-sm mb-8">
 
           <div className="relative flex-1 max-w-md">
             <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">

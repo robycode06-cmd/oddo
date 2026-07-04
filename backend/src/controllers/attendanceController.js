@@ -1,4 +1,4 @@
-import Attendance from '../models/attendanceModel.js';
+import Attendance from '../models/Attendance.js';
 
 /**
  * Utility function to get the current date in local YYYY-MM-DD format.

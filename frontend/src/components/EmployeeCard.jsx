@@ -10,25 +10,7 @@ const EmployeeCard = ({ employee }) => {
   // Generate initials for placeholder avatar
   const initials = `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
 
-  // Handle card selection click (Navigation Skeleton)
-  const handleCardClick = () => {
-    /* 
-      FUTURE COMPONENT ROUTING DEVELOPMENT:
-      When this card is clicked, it should open/render the detailed dashboard of this employee.
-      
-      Instructions for integration:
-      1. If using React Router DOM:
-         import { useNavigate } from 'react-router-dom';
-         const navigate = useNavigate();
-         navigate(`/employees/${employee._id}`);
-         
-      2. If using state-based rendering in Parent Component:
-         pass a callback prop: e.g. onSelectEmployee(employee)
-         and trigger it here: onSelectEmployee(employee)
-    */
-    console.log(`Card clicked for employee: ${fullName} (ID: ${loginId || employee._id})`);
-    alert(`[Skeleton Action] Opening detailed dashboard for: ${fullName} (${loginId})`);
-  };
+
 
   // Determine status indicator mapping: Retaining ONLY symbols (no text labels)
   const renderStatusIndicator = () => {
@@ -62,8 +44,7 @@ const EmployeeCard = ({ employee }) => {
 
   return (
     <div 
-      onClick={handleCardClick}
-      className="relative overflow-hidden bg-white border-2 border-purple-100 hover:border-purple-300 rounded-xl p-5 shadow-sm hover:opacity-80 transition-all duration-300 flex flex-col items-center text-center group cursor-pointer"
+      className="relative overflow-hidden bg-white border border-[#F1EDF0] hover:border-[#714B67] rounded-xl p-5 shadow-sm hover:opacity-90 transition-all duration-300 flex flex-col items-center text-center group cursor-pointer"
     >
       {/* Top right status indicator (ONLY visual symbol) */}
       <div className="absolute top-3 right-3">

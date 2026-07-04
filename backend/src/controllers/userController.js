@@ -59,7 +59,6 @@ export const createEmployee = async (req, res) => {
       loginId,
       email: normalizedEmail,
       password: tempPassword, // Will be hashed automatically by Employee pre-save hook
-      tempPassword: tempPassword, // Saved in plaintext for Admin/HR visibility
       role: role || 'Employee',
       profile: {
         firstName: firstName.trim(),
@@ -107,8 +106,10 @@ export const createEmployee = async (req, res) => {
  */
 export const getAllEmployees = async (req, res) => {
   try {
-    // Fetch all employees, selecting necessary fields (excluding passwords for safety)
-    const employees = await Employee.find({}).select('-password');
+    const isStaff = req.user.role === 'Admin' || req.user.role === 'HR';
+    const selectFields = isStaff ? '-password' : '-password -salary';
+    
+    const employees = await Employee.find({}).select(selectFields);
     res.status(200).json(employees);
   } catch (error) {
     console.error('Error fetching employees:', error);
@@ -139,5 +140,82 @@ export const deleteEmployee = async (req, res) => {
   } catch (error) {
     console.error('Error deleting employee:', error);
     res.status(500).json({ message: 'Internal server error during deletion.' });
+  }
+};
+
+/**
+ * Fetch a single employee by ID
+ * GET /create/:id
+ */
+export const getEmployeeById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const employee = await Employee.findById(id).select('-password');
+    if (!employee) {
+      return res.status(404).json({ message: 'Employee not found.' });
+    }
+    res.status(200).json({ success: true, data: employee });
+  } catch (error) {
+    console.error('Error fetching employee by ID:', error);
+    res.status(500).json({ message: 'Error retrieving employee record.' });
+  }
+};
+
+/**
+ * Update an employee's profile, credentials, or salary
+ * PUT /create/:id
+ */
+export const updateEmployeeProfile = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { profile, email, password, salary } = req.body;
+
+    const employee = await Employee.findById(id);
+    if (!employee) {
+      return res.status(404).json({ message: 'Employee not found.' });
+    }
+
+    // Authorization: Only Admin/HR can update salary.
+    // An employee can only update their own private info or security details.
+    if (salary && req.user.role !== 'Admin' && req.user.role !== 'HR') {
+      return res.status(403).json({ message: 'Not authorized to update salary.' });
+    }
+    if (req.user.role !== 'Admin' && req.user.role !== 'HR' && req.user.id !== id) {
+      return res.status(403).json({ message: 'Not authorized to update this profile.' });
+    }
+
+    // Update Profile Info
+    if (profile) {
+      if (profile.address !== undefined) employee.profile.address = profile.address;
+      if (profile.phone !== undefined) employee.profile.phone = profile.phone;
+      if (profile.profilePicture !== undefined) employee.profile.profilePicture = profile.profilePicture;
+    }
+
+    // Update Salary
+    if (salary) {
+      if (salary.base !== undefined) employee.salary.base = salary.base;
+      if (salary.hra !== undefined) employee.salary.hra = salary.hra;
+      if (salary.allowances !== undefined) employee.salary.allowances = salary.allowances;
+    }
+
+    // Update Security Credentials
+    if (email) {
+      const emailExists = await Employee.findOne({ email, _id: { $ne: id } });
+      if (emailExists) return res.status(400).json({ message: 'Email is already in use.' });
+      employee.email = email;
+    }
+    if (password && password.trim() !== '') {
+      employee.password = password;
+    }
+
+    await employee.save();
+    
+    // Return updated employee without sensitive hash
+    const updatedEmployee = await Employee.findById(id).select('-password');
+    res.status(200).json({ success: true, message: 'Profile updated successfully', data: updatedEmployee });
+
+  } catch (error) {
+    console.error('Error updating employee:', error);
+    res.status(500).json({ message: 'Internal server error during update.' });
   }
 };
