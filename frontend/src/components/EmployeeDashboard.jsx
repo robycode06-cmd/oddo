@@ -47,26 +47,17 @@ const EmployeeDashboard = () => {
         setLoading(true);
         setError('');
 
-        /* ==========================================================
-           CORE LOGIC FOR FETCHING DIRECTORY LIST AND CURRENT USER
-           ==========================================================
-           TODO: Implement the API fetch request here.
-           Example implementation:
+        const response = await axios.get(`${API_BASE_URL}/users`, {
+          withCredentials: true
+        });
+        
+        const employeeList = response.data.data || response.data || [];
+        setEmployees(employeeList);
 
-           const response = await axios.get(`${API_BASE_URL}/users`, {
-             withCredentials: true
-           });
-           
-           const employeeList = response.data.data || response.data || [];
-           setEmployees(employeeList);
+        const activeUser = employeeList.find(emp => emp._id === loggedInUserId) || employeeList[0];
+        setCurrentUser(activeUser);
 
-           const activeUser = employeeList.find(emp => emp._id === loggedInUserId) || employeeList[0];
-           setCurrentUser(activeUser);
-        */
-
-        // Production Initializer: Initialize empty list
-        setEmployees([]);
-        setCurrentUser(null);
+        
 
       } catch (err) {
         console.error('Error fetching dashboard data:', err);

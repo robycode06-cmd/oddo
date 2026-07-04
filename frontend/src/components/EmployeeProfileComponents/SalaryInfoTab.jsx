@@ -86,32 +86,25 @@ const SalaryInfoTab = ({ employee, currentUser, onUpdateSuccess }) => {
       setError('');
       setMessage('');
 
-      /* ==========================================
-         CORE LOGIC FOR PERSISTING SALARY PARAMETERS
-         ==========================================
-         TODO: Implement the API PUT request here.
-         Example implementation:
-         
-         const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
-         const response = await axios.put(
-           `${API_BASE_URL}/users/profile/${employee._id}`,
-           {
-             salary: {
-               base: basic,        // Maps to Basic
-               hra: hra,          // Maps to House Rent Allowance
-               allowances: standardAllowance // Maps to Standard Allowance
-             }
-           },
-           { withCredentials: true }
-         );
+      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
+      const response = await axios.put(
+        `${API_BASE_URL}/users/profile/${employee._id}`,
+        {
+          salary: {
+            base: basic,        // Maps to Basic
+            hra: hra,          // Maps to House Rent Allowance
+            allowances: standardAllowance // Maps to Standard Allowance
+          }
+        },
+        { withCredentials: true }
+      );
 
-         if (response.data.success) {
-           setMessage('Salary details updated and calculated successfully!');
-           if (onUpdateSuccess) {
-             onUpdateSuccess(response.data.data);
-           }
-         }
-      */
+      if (response.data.success) {
+        setMessage('Salary details updated and calculated successfully!');
+        if (onUpdateSuccess) {
+          onUpdateSuccess(response.data.data);
+        }
+      }
 
     } catch (err) {
       console.error('Error saving salary info:', err);

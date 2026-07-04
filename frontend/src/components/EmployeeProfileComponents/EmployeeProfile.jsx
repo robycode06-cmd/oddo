@@ -37,27 +37,20 @@ const EmployeeProfile = ({ currentUser, onProfileUpdated }) => {
         setLoading(true);
         setError('');
 
-        /* ==========================================
-           CORE LOGIC FOR FETCHING SINGLE EMPLOYEE PROFILE BY ID
-           ==========================================
-           TODO: Implement the API fetch request here.
-           Example implementation:
-           
-           const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
-           const response = await axios.get(`${API_BASE_URL}/users/profile/${id}`, { withCredentials: true });
-           if (response.data.success) {
-             const empData = response.data.data;
-             setEmployee(empData);
-             
-             // Initialize form fields
-             setAddress(empData.profile?.address || '');
-             setPhone(empData.profile?.phone || '');
-             setProfilePicture(empData.profile?.profilePicture || '');
-             setEmail(empData.email || '');
-           } else {
-             setError('Employee profile not found.');
-           }
-        */
+        const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
+        const response = await axios.get(`${API_BASE_URL}/users/profile/${id}`, { withCredentials: true });
+        if (response.data.success) {
+          const empData = response.data.data;
+          setEmployee(empData);
+          
+          // Initialize form fields
+          setAddress(empData.profile?.address || '');
+          setPhone(empData.profile?.phone || '');
+          setProfilePicture(empData.profile?.profilePicture || '');
+          setEmail(empData.email || '');
+        } else {
+          setError('Employee profile not found.');
+        }
 
       } catch (err) {
         console.error('Error fetching employee details:', err);
@@ -87,29 +80,22 @@ const EmployeeProfile = ({ currentUser, onProfileUpdated }) => {
       setError('');
       setSuccessMessage('');
 
-      /* ==========================================
-         CORE LOGIC FOR UPDATING PRIVATE PROFILE INFO
-         ==========================================
-         TODO: Implement the API PUT request here.
-         Example implementation:
-         
-         const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
-         const response = await axios.put(
-           `${API_BASE_URL}/users/profile/${id}`,
-           {
-             profile: { address, phone, profilePicture }
-           },
-           { withCredentials: true }
-         );
+      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
+      const response = await axios.put(
+        `${API_BASE_URL}/users/profile/${id}`,
+        {
+          profile: { address, phone, profilePicture }
+        },
+        { withCredentials: true }
+      );
 
-         if (response.data.success) {
-           setSuccessMessage('Private information updated successfully!');
-           setEmployee(response.data.data);
-           if (onProfileUpdated) {
-             onProfileUpdated(response.data.data);
-           }
-         }
-      */
+      if (response.data.success) {
+        setSuccessMessage('Private information updated successfully!');
+        setEmployee(response.data.data);
+        if (onProfileUpdated) {
+          onProfileUpdated(response.data.data);
+        }
+      }
 
     } catch (err) {
       console.error('Error saving private profile details:', err);
@@ -127,33 +113,26 @@ const EmployeeProfile = ({ currentUser, onProfileUpdated }) => {
       setError('');
       setSuccessMessage('');
 
-      /* ==========================================
-         CORE LOGIC FOR UPDATING SECURITY CREDENTIALS
-         ==========================================
-         TODO: Implement the API PUT request here.
-         Example implementation:
-         
-         const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
-         const payload = { email };
-         if (password.trim() !== '') {
-           payload.password = password;
-         }
+      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
+      const payload = { email };
+      if (password.trim() !== '') {
+        payload.password = password;
+      }
 
-         const response = await axios.put(
-           `${API_BASE_URL}/users/profile/${id}`,
-           payload,
-           { withCredentials: true }
-         );
+      const response = await axios.put(
+        `${API_BASE_URL}/users/profile/${id}`,
+        payload,
+        { withCredentials: true }
+      );
 
-         if (response.data.success) {
-           setSuccessMessage('Security credentials updated successfully!');
-           setPassword(''); // Clear input after successful save
-           setEmployee(response.data.data);
-           if (onProfileUpdated) {
-             onProfileUpdated(response.data.data);
-           }
-         }
-      */
+      if (response.data.success) {
+        setSuccessMessage('Security credentials updated successfully!');
+        setPassword(''); // Clear input after successful save
+        setEmployee(response.data.data);
+        if (onProfileUpdated) {
+          onProfileUpdated(response.data.data);
+        }
+      }
 
     } catch (err) {
       console.error('Error saving security settings:', err);
