@@ -1,6 +1,8 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
-const EmployeeCard = ({ employee }) => {
+const EmployeeCard = ({ employee, onClick }) => {
+  const navigate = useNavigate();
   const { profile = {}, role, loginId, status } = employee;
   const firstName = profile.firstName || 'Employee';
   const lastName = profile.lastName || '';
@@ -10,24 +12,13 @@ const EmployeeCard = ({ employee }) => {
   // Generate initials for placeholder avatar
   const initials = `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
 
-  // Handle card selection click (Navigation Skeleton)
+  // Handle card selection click (Direct route navigation fallback)
   const handleCardClick = () => {
-    /* 
-      FUTURE COMPONENT ROUTING DEVELOPMENT:
-      When this card is clicked, it should open/render the detailed dashboard of this employee.
-      
-      Instructions for integration:
-      1. If using React Router DOM:
-         import { useNavigate } from 'react-router-dom';
-         const navigate = useNavigate();
-         navigate(`/employees/${employee._id}`);
-         
-      2. If using state-based rendering in Parent Component:
-         pass a callback prop: e.g. onSelectEmployee(employee)
-         and trigger it here: onSelectEmployee(employee)
-    */
-    console.log(`Card clicked for employee: ${fullName} (ID: ${loginId || employee._id})`);
-    alert(`[Skeleton Action] Opening detailed dashboard for: ${fullName} (${loginId})`);
+    if (onClick) {
+      onClick(employee);
+    } else {
+      navigate(`/profile/${employee._id}`);
+    }
   };
 
   // Determine status indicator mapping: Retaining ONLY symbols (no text labels)
@@ -45,7 +36,7 @@ const EmployeeCard = ({ employee }) => {
       case 'Leave':
         return (
           <div className="flex items-center justify-center p-1 bg-purple-50 rounded-full border border-purple-200 shadow-sm" title="On Leave">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 text-purple-600 animate-pulse" fill="currentColor" viewBox="0 0 24 24">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 text-purple-600" fill="currentColor" viewBox="0 0 24 24">
               <path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L14 19v-5.5l7 2.5z"/>
             </svg>
           </div>
@@ -70,7 +61,7 @@ const EmployeeCard = ({ employee }) => {
         {renderStatusIndicator()}
       </div>
 
-      {/* Profile Picture / Initials (Small-Medium w-14 h-14 circle) */}
+      {/* Profile Picture / Initials */}
       <div className="mt-4 mb-4 relative">
         {avatarUrl && avatarUrl !== 'https://unsplash.com' ? (
           <img 

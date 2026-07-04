@@ -367,13 +367,7 @@ const EmployeeDashboard = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {employees.map(emp => (
-              <div 
-                key={emp._id}
-                onClick={() => navigate(`/profile/${emp._id}`)}
-                className="cursor-pointer transition-transform hover:-translate-y-1 active:scale-98"
-              >
-                <EmployeeCard employee={emp} />
-              </div>
+              <EmployeeCard key={emp._id} employee={emp} />
             ))}
           </div>
         </section>
