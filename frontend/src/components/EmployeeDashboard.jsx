@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import EmployeeCard from './EmployeeCard';
 
@@ -7,6 +8,8 @@ import EmployeeCard from './EmployeeCard';
 axios.defaults.withCredentials = true;
 
 const EmployeeDashboard = () => {
+  const navigate = useNavigate();
+
   // Production Setup: Initialize state as empty/null, completely independent of local mock data
   const [employees, setEmployees] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
@@ -37,28 +40,33 @@ const EmployeeDashboard = () => {
     setCurrentUser(prev => (prev ? { ...prev, status: newStatus } : null));
   };
 
+  // Fetch employee directory list on mount / render only
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
         setLoading(true);
         setError('');
 
-        // Fetch team directory list from backend.
-        // NOTE: The token is contained in an HttpOnly cookie, which is sent automatically.
-        const response = await axios.get(`${API_BASE_URL}/users`, {
-          withCredentials: true
-        });
-        
-        const employeeList = response.data.data || response.data || [];
-        setEmployees(employeeList);
+        /* ==========================================================
+           CORE LOGIC FOR FETCHING DIRECTORY LIST AND CURRENT USER
+           ==========================================================
+           TODO: Implement the API fetch request here.
+           Example implementation:
 
-        /*
-          AUTHENTICATING CURRENT LOGGED IN USER:
-          Identify the logged-in user inside the directory pool using the local userId lookup.
-          In production, you can alternatively fetch this details via a dedicated '/api/users/me' route.
+           const response = await axios.get(`${API_BASE_URL}/users`, {
+             withCredentials: true
+           });
+           
+           const employeeList = response.data.data || response.data || [];
+           setEmployees(employeeList);
+
+           const activeUser = employeeList.find(emp => emp._id === loggedInUserId) || employeeList[0];
+           setCurrentUser(activeUser);
         */
-        const activeUser = employeeList.find(emp => emp._id === loggedInUserId) || employeeList[0];
-        setCurrentUser(activeUser);
+
+        // Production Initializer: Initialize empty list
+        setEmployees([]);
+        setCurrentUser(null);
 
       } catch (err) {
         console.error('Error fetching dashboard data:', err);
@@ -134,26 +142,9 @@ const EmployeeDashboard = () => {
     }
   };
 
-  // 3. Handle Search Bar Input (Typable & Accessible)
+  // 3. Handle Search Bar Input
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
-    
-    /*
-      FUTURE INTERACTIVE FILTERING DEVELOPMENT:
-      To fully connect filtering logic inside the directory view:
-      
-      1. Maintain a master record list (e.g. `const [masterEmployees, setMasterEmployees] = useState(data)`)
-      2. Filter items matching query criteria:
-         
-         const queryText = e.target.value.toLowerCase();
-         const filteredResults = masterEmployees.filter(emp => 
-           emp.profile?.firstName?.toLowerCase().includes(queryText) ||
-           emp.profile?.lastName?.toLowerCase().includes(queryText) ||
-           emp.loginId?.toLowerCase().includes(queryText) ||
-           emp.role?.toLowerCase().includes(queryText)
-         );
-         setEmployees(filteredResults);
-    */
   };
 
   // Header Avatar Render (Displays profile photo, falls back to initials if none)
@@ -228,23 +219,39 @@ const EmployeeDashboard = () => {
     return (
       <div className="min-h-screen bg-[#F9F9FB] flex items-center justify-center font-sans p-6">
         <div className="text-center p-8 bg-white border-2 border-purple-100 rounded-xl shadow-sm max-w-sm w-full">
-          <p className="text-[#875A7B] font-black text-xl tracking-wider">NO EMPLOYEES</p>
+          <p className="text-[#875A7B] font-black text-xl tracking-wider uppercase">No Employees</p>
         </div>
       </div>
     );
   }
 
+   // 3. Filter employees based on search query text (searches firstName, lastName, and loginId)
+  const filteredEmployees = employees.filter(emp => {
+    const query = searchQuery.toLowerCase().trim();
+    if (!query) return true;
+    
+    const firstName = emp.profile?.firstName?.toLowerCase() || '';
+    const lastName = emp.profile?.lastName?.toLowerCase() || '';
+    const fullName = `${firstName} ${lastName}`.trim();
+    const loginId = emp.loginId?.toLowerCase() || '';
+    
+    return firstName.includes(query) || 
+           lastName.includes(query) || 
+           fullName.includes(query) || 
+           loginId.includes(query);
+  });
+
   return (
     <div className="min-h-screen bg-[#F9F9FB] p-6 md:p-10 font-sans">
       <div className="max-w-7xl mx-auto">
         
-        {/* Dashboard Header - Simplified to a simple dashboard header in smaller text */}
+        {/* Dashboard Header */}
         <header className="flex flex-col md:flex-row md:items-center md:justify-between border-b border-slate-200 pb-5 mb-8 gap-4">
           <div>
             <h1 className="text-base font-bold text-slate-700 uppercase tracking-wider">Dashboard</h1>
           </div>
           
-          {/* Quick Check-in/out Actions & Account controls for Current Logged-in Employee */}
+          {/* Account and Attendance Controls */}
           {currentUser && (
             <div className="flex items-center gap-4 bg-white p-3 rounded-xl border-2 border-purple-100/50 shadow-sm">
               <div className="flex items-center gap-3">
@@ -257,7 +264,7 @@ const EmployeeDashboard = () => {
                 </div>
               </div>
 
-              {/* Attendance Actions Badge (ONLY visual indicator symbols rendered) */}
+              {/* Attendance Actions Badge */}
               <div className="border-l border-slate-200 pl-4 pr-1 flex items-center gap-3">
                 {renderHeaderStatusIndicator()}
                 
@@ -285,17 +292,16 @@ const EmployeeDashboard = () => {
                   </button>
                 )}
 
-                {/* Logout Button (Same design as Check-in/out, styled in Red, placed next to them) */}
+                {/* Logout Button */}
                 <button
                   onClick={async () => {
                     try {
-                      // Call backend logout route if cookie needs server clearance
                       await axios.post(`${API_BASE_URL}/users/logout`, {}, { withCredentials: true });
                     } catch (err) {
-                      console.warn('Backend offline or logout endpoint unconfigured, clearing user local state');
+                      console.warn('Backend unconfigured, clearing user local state');
                     }
                     localStorage.removeItem('userId');
-                    alert('[Skeleton Action] Logging out employee and clearing secure sessions...');
+                    alert('[Skeleton Action] Logging out employee...');
                   }}
                   className="inline-flex items-center bg-rose-600 hover:bg-rose-700 text-white px-4 py-1.5 rounded-lg text-xs font-bold transition-all shadow-sm active:scale-95 cursor-pointer"
                 >
@@ -306,7 +312,6 @@ const EmployeeDashboard = () => {
           )}
         </header>
 
-        {/* Message Banner for Success or Errors */}
         {error && (
           <div className="mb-6 p-4 bg-rose-50 border border-rose-200 text-rose-700 rounded-xl flex items-center gap-3 text-sm font-medium">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-rose-500" viewBox="0 0 20 20" fill="currentColor">
@@ -325,16 +330,11 @@ const EmployeeDashboard = () => {
           </div>
         )}
 
-        {/* Search & Actions Bar (Odoo Style - Swapped: New button on left, Search on right) */}
+        {/* Search & Actions Bar */}
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 bg-white p-4 rounded-xl border border-slate-200 shadow-sm mb-8">
           
-          {/* New Button (Left side) */}
           <button
             onClick={() => {
-              /*
-                TODO: In future updates, clicking this button will open the Admin/HR employee registration modal.
-                e.g., setIsCreateModalOpen(true);
-              */
               alert('[Skeleton Action] Create/Add New Employee modal will open here.');
             }}
             style={{ backgroundColor: '#875A7B' }}
@@ -348,7 +348,6 @@ const EmployeeDashboard = () => {
             New
           </button>
 
-          {/* Search Bar - Typable and Accessible */}
           <div className="relative flex-1 max-w-md">
             <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
               <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -377,7 +376,13 @@ const EmployeeDashboard = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {employees.map(emp => (
-              <EmployeeCard key={emp._id} employee={emp} />
+              <div 
+                key={emp._id}
+                onClick={() => navigate(`/profile/${emp._id}`)}
+                className="cursor-pointer transition-transform hover:-translate-y-1 active:scale-98"
+              >
+                <EmployeeCard employee={emp} />
+              </div>
             ))}
           </div>
         </section>

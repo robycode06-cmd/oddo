@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import Employee from './model/Employee.js';
+import Employee from './models/Employee.js';
 
 export const connectDB = async () => {
   try {
@@ -31,7 +31,7 @@ const seedInitialAdmin = async () => {
           firstName: 'System',
           lastName: 'Admin',
           address: 'Headquarters',
-          phone: '+1-000-0000'
+          phone: '+91 8955315275'
         },
         salary: {
           base: 10000,

@@ -1,5 +1,6 @@
-import Employee from '../model/Employee.js';
+import Employee from '../models/Employee.js';
 import crypto from 'crypto';
+
 
 /**
  * Admin/HR route to register new employees
@@ -58,6 +59,7 @@ export const createEmployee = async (req, res) => {
       loginId,
       email: normalizedEmail,
       password: tempPassword, // Will be hashed automatically by Employee pre-save hook
+      tempPassword: tempPassword, // Saved in plaintext for Admin/HR visibility
       role: role || 'Employee',
       profile: {
         firstName: firstName.trim(),
@@ -96,5 +98,46 @@ export const createEmployee = async (req, res) => {
       message: 'Internal Server Error during user creation.', 
       error: error.message 
     });
+  }
+};
+
+/**
+ * Fetch all registered employees
+ * GET /create
+ */
+export const getAllEmployees = async (req, res) => {
+  try {
+    // Fetch all employees, selecting necessary fields (excluding passwords for safety)
+    const employees = await Employee.find({}).select('-password');
+    res.status(200).json(employees);
+  } catch (error) {
+    console.error('Error fetching employees:', error);
+    res.status(500).json({ message: 'Error retrieving employee records.' });
+  }
+};
+
+/**
+ * Delete an employee record
+ * DELETE /create/:id
+ */
+export const deleteEmployee = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Prevent Admin/HR from deleting their own account
+    if (req.user.id === id) {
+      return res.status(400).json({ message: 'You cannot delete your own account.' });
+    }
+
+    const employee = await Employee.findById(id);
+    if (!employee) {
+      return res.status(404).json({ message: 'Employee not found.' });
+    }
+
+    await Employee.findByIdAndDelete(id);
+    res.status(200).json({ message: 'Employee record deleted successfully.' });
+  } catch (error) {
+    console.error('Error deleting employee:', error);
+    res.status(500).json({ message: 'Internal server error during deletion.' });
   }
 };
