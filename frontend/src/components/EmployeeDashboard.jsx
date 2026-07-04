@@ -2,12 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../axios_api/axios';
 import EmployeeCard from './EmployeeCard';
+import EmployeeAttendanceTable from './EmployeeAttendanceTable';
+import TimeOffModal from './TimeOffModal';
 
 const EmployeeDashboard = () => {
   const navigate = useNavigate();
 
   // Production Setup: Initialize state as empty/null, completely independent of local mock data
   const [employees, setEmployees] = useState([]);
+  const [activeTab, setActiveTab] = useState('directory'); // 'directory', 'attendance'
+  const [isTimeOffOpen, setIsTimeOffOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -274,6 +278,17 @@ const EmployeeDashboard = () => {
                   </button>
                 )}
 
+                {/* Time Off button */}
+                <button
+                  onClick={() => setIsTimeOffOpen(true)}
+                  style={{ border: '1px solid #875A7B', color: '#875A7B' }}
+                  onMouseOver={(e) => { e.target.style.backgroundColor = '#F9F6F8'; }}
+                  onMouseOut={(e) => { e.target.style.backgroundColor = 'transparent'; }}
+                  className="inline-flex items-center bg-transparent px-3 py-1.5 rounded-lg text-xs font-bold transition-all active:scale-95 disabled:opacity-50 cursor-pointer"
+                >
+                  Time Off
+                </button>
+
                 {/* Logout Button */}
                 <button
                   onClick={async () => {
@@ -312,47 +327,84 @@ const EmployeeDashboard = () => {
           </div>
         )}
 
-        {/* Search & Actions Bar */}
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-4 bg-white p-4 rounded-xl border border-slate-200 shadow-sm mb-8">
-
-          <div className="relative flex-1 max-w-md">
-            <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-              <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-              </svg>
-            </span>
-            <input 
-              type="text" 
-              value={searchQuery}
-              onChange={handleSearchChange}
-              placeholder="Search employees..." 
-              className="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-lg text-sm bg-slate-50 text-slate-800 focus:outline-none focus:bg-white focus:border-purple-600 transition-colors"
-            />
-          </div>
-
+        {/* Tabs Navigation */}
+        <div className="mb-6 flex gap-6 border-b border-slate-200">
+          <button
+            onClick={() => setActiveTab('directory')}
+            className={`pb-3 text-sm font-bold border-b-2 px-1 transition-all cursor-pointer ${
+              activeTab === 'directory'
+                ? 'border-[#875A7B] text-[#875A7B]'
+                : 'border-transparent text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            Team Directory
+          </button>
+          <button
+            onClick={() => setActiveTab('attendance')}
+            className={`pb-3 text-sm font-bold border-b-2 px-1 transition-all cursor-pointer ${
+              activeTab === 'attendance'
+                ? 'border-[#875A7B] text-[#875A7B]'
+                : 'border-transparent text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            My Attendance
+          </button>
         </div>
 
-        {/* Employee Grid */}
-        <section>
-          <div className="flex items-center justify-between mb-5">
-            <h2 className="text-lg font-bold text-slate-800">Team Directory</h2>
-            <span className="bg-slate-200/80 text-slate-700 text-xs px-2.5 py-1 rounded-md font-bold">
-              Total: {employees.length}
-            </span>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {employees.map(emp => (
-              <div 
-                key={emp._id}
-                onClick={() => navigate(`/profile/${emp._id}`)}
-                className="cursor-pointer transition-transform hover:-translate-y-1 active:scale-98"
-              >
-                <EmployeeCard employee={emp} />
+        {activeTab === 'directory' && (
+          <>
+            {/* Search & Actions Bar */}
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-4 bg-white p-4 rounded-xl border border-slate-200 shadow-sm mb-8">
+              <div className="relative flex-1 max-w-md">
+                <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                  <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                  </svg>
+                </span>
+                <input 
+                  type="text" 
+                  value={searchQuery}
+                  onChange={handleSearchChange}
+                  placeholder="Search employees..." 
+                  className="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-lg text-sm bg-slate-50 text-slate-800 focus:outline-none focus:bg-white focus:border-purple-600 transition-colors"
+                />
               </div>
-            ))}
-          </div>
-        </section>
+            </div>
+
+            {/* Employee Grid */}
+            <section>
+              <div className="flex items-center justify-between mb-5">
+                <h2 className="text-lg font-bold text-slate-800">Team Directory</h2>
+                <span className="bg-slate-200/80 text-slate-700 text-xs px-2.5 py-1 rounded-md font-bold">
+                  Total: {employees.length}
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {employees.filter(emp => 
+                  `${emp.profile?.firstName} ${emp.profile?.lastName}`
+                    .toLowerCase()
+                    .includes(searchQuery.toLowerCase())
+                ).map(emp => (
+                  <div 
+                    key={emp._id}
+                    onClick={() => navigate(`/profile/${emp._id}`)}
+                    className="cursor-pointer transition-transform hover:-translate-y-1 active:scale-98"
+                  >
+                    <EmployeeCard employee={emp} />
+                  </div>
+                ))}
+              </div>
+            </section>
+          </>
+        )}
+
+        {activeTab === 'attendance' && (
+          <EmployeeAttendanceTable />
+        )}
+
+        {/* Time Off Modal */}
+        <TimeOffModal isOpen={isTimeOffOpen} onClose={() => setIsTimeOffOpen(false)} />
       </div>
     </div>
   );

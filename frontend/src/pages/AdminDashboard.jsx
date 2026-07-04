@@ -104,132 +104,171 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      {/* Main Table Container */}
-      <div className="w-full max-w-7xl mx-auto bg-white border border-[#F1EDF0] rounded-2xl shadow-[0_1px_3px_rgba(113,75,103,0.08)]">
-        <div className="px-6 py-5 flex justify-between items-center border-b border-[#F1EDF0]">
-          <h2 className="text-base font-bold text-gray-800">Employee Registry</h2>
-          <span className="text-xs font-bold text-[#714B67] bg-[#F4EFF2] px-2.5 py-1 rounded-lg">
-            {employees.length} {employees.length === 1 ? 'Record' : 'Records'}
-          </span>
-        </div>
+      {/* Tabs Navigation */}
+      <div className="w-full max-w-7xl mx-auto mb-6 flex gap-6 border-b border-gray-200">
+        <button
+          onClick={() => setActiveTab('registry')}
+          className={`pb-3 text-sm font-bold border-b-2 px-1 transition-all cursor-pointer ${
+            activeTab === 'registry'
+              ? 'border-[#714B67] text-[#714B67]'
+              : 'border-transparent text-gray-500 hover:text-gray-700'
+          }`}
+        >
+          Employees
+        </button>
+        <button
+          onClick={() => setActiveTab('attendance')}
+          className={`pb-3 text-sm font-bold border-b-2 px-1 transition-all cursor-pointer ${
+            activeTab === 'attendance'
+              ? 'border-[#714B67] text-[#714B67]'
+              : 'border-transparent text-gray-500 hover:text-gray-700'
+          }`}
+        >
+          Attendance Log
+        </button>
+        <button
+          onClick={() => setActiveTab('leaves')}
+          className={`pb-3 text-sm font-bold border-b-2 px-1 transition-all cursor-pointer ${
+            activeTab === 'leaves'
+              ? 'border-[#714B67] text-[#714B67]'
+              : 'border-transparent text-gray-500 hover:text-gray-700'
+          }`}
+        >
+          Leave Requests
+        </button>
+      </div>
 
-        {error && (
-          <div className="bg-[#FEF2F2] border-b border-[#F1EDF0] text-[#991B1B] px-6 py-3 text-sm font-medium">
-            {error}
-          </div>
-        )}
+      <div className="w-full max-w-7xl mx-auto">
+        {activeTab === 'registry' && (
+          <div className="bg-white border border-[#F1EDF0] rounded-2xl shadow-[0_1px_3px_rgba(113,75,103,0.08)]">
+            <div className="px-6 py-5 flex justify-between items-center border-b border-[#F1EDF0]">
+              <h2 className="text-base font-bold text-gray-800">Employee Registry</h2>
+              <span className="text-xs font-bold text-[#714B67] bg-[#F4EFF2] px-2.5 py-1 rounded-lg">
+                {employees.length} {employees.length === 1 ? 'Record' : 'Records'}
+              </span>
+            </div>
 
-        {loading ? (
-          <div className="flex flex-col items-center justify-center py-20 gap-3">
-            <svg className="animate-spin h-6 w-6 text-[#714B67]" fill="none" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-            </svg>
-            <p className="text-sm text-[#9C8195]">Loading directory...</p>
-          </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse text-sm">
-              <thead>
-                <tr className="bg-[#FDFCFD] border-b border-[#F1EDF0]">
-                  <th className="py-3.5 px-6 text-xs font-bold text-gray-400 uppercase tracking-wider">Name</th>
-                  <th className="py-3.5 px-6 text-xs font-bold text-gray-400 uppercase tracking-wider">Email</th>
-                  <th className="py-3.5 px-6 text-xs font-bold text-gray-400 uppercase tracking-wider">Login ID</th>
-                  <th className="py-3.5 px-6 text-xs font-bold text-gray-400 uppercase tracking-wider">Password</th>
-                  <th className="py-3.5 px-6 text-xs font-bold text-gray-400 uppercase tracking-wider">Role</th>
-                  <th className="py-3.5 px-6 text-xs font-bold text-gray-400 uppercase tracking-wider text-right">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {employees.map((emp) => (
-                  <tr key={emp._id} className="border-b border-[#F1EDF0] last:border-0 hover:bg-[#faf8f9] transition-colors group">
-                    <td className="py-4 px-6">
-                      <Link to={`/profile/${emp._id}`} className="font-bold text-gray-800 hover:text-[#714B67] transition-colors">
-                        {emp.profile?.firstName} {emp.profile?.lastName}
-                      </Link>
-                    </td>
-                    <td className="py-4 px-6 text-gray-500 font-medium">{emp.email}</td>
-                    <td className="py-4 px-6 font-bold text-[#714B67] font-mono text-xs">{emp.loginId}</td>
-                    <td className="py-4 px-6 font-mono text-xs text-gray-500">
-                      <div className="flex items-center gap-2">
-                        <span>{showPasswords[emp._id] ? (emp.tempPassword || '••••••••') : '••••••••'}</span>
-                        {emp.tempPassword && (
-                          <button
-                            onClick={() => togglePasswordVisibility(emp._id)}
-                            className="text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
-                            type="button"
-                          >
-                            {showPasswords[emp._id] ? (
-                              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />
-                              </svg>
-                            ) : (
-                              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                              </svg>
+            {error && (
+              <div className="bg-[#FEF2F2] border-b border-[#F1EDF0] text-[#991B1B] px-6 py-3 text-sm font-medium">
+                {error}
+              </div>
+            )}
+
+            {loading ? (
+              <div className="flex flex-col items-center justify-center py-20 gap-3">
+                <svg className="animate-spin h-6 w-6 text-[#714B67]" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                </svg>
+                <p className="text-sm text-[#9C8195]">Loading directory...</p>
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse text-sm">
+                  <thead>
+                    <tr className="bg-[#FDFCFD] border-b border-[#F1EDF0]">
+                      <th className="py-3.5 px-6 text-xs font-bold text-gray-400 uppercase tracking-wider">Name</th>
+                      <th className="py-3.5 px-6 text-xs font-bold text-gray-400 uppercase tracking-wider">Email</th>
+                      <th className="py-3.5 px-6 text-xs font-bold text-gray-400 uppercase tracking-wider">Login ID</th>
+                      <th className="py-3.5 px-6 text-xs font-bold text-gray-400 uppercase tracking-wider">Password</th>
+                      <th className="py-3.5 px-6 text-xs font-bold text-gray-400 uppercase tracking-wider">Role</th>
+                      <th className="py-3.5 px-6 text-xs font-bold text-gray-400 uppercase tracking-wider text-right">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {employees.map((emp) => (
+                      <tr key={emp._id} className="border-b border-[#F1EDF0] last:border-0 hover:bg-[#faf8f9] transition-colors group">
+                        <td className="py-4 px-6">
+                          <Link to={`/profile/${emp._id}`} className="font-bold text-gray-800 hover:text-[#714B67] transition-colors">
+                            {emp.profile?.firstName} {emp.profile?.lastName}
+                          </Link>
+                        </td>
+                        <td className="py-4 px-6 text-gray-500 font-medium">{emp.email}</td>
+                        <td className="py-4 px-6 font-bold text-[#714B67] font-mono text-xs">{emp.loginId}</td>
+                        <td className="py-4 px-6 font-mono text-xs text-gray-500">
+                          <div className="flex items-center gap-2">
+                            <span>{showPasswords[emp._id] ? (emp.tempPassword || '••••••••') : '••••••••'}</span>
+                            {emp.tempPassword && (
+                              <button
+                                onClick={() => togglePasswordVisibility(emp._id)}
+                                className="text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
+                                type="button"
+                              >
+                                {showPasswords[emp._id] ? (
+                                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />
+                                  </svg>
+                                ) : (
+                                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                  </svg>
+                                )}
+                              </button>
                             )}
-                          </button>
-                        )}
-                      </div>
-                    </td>
-                    <td className="py-4 px-6">
-                      <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold ${
-                        emp.role === 'Admin' ? 'bg-red-50 text-red-600' :
-                        emp.role === 'HR' ? 'bg-[#F4EFF2] text-[#714B67]' :
-                        'bg-slate-100 text-slate-700'
-                      }`}>
-                        {emp.role}
-                      </span>
-                    </td>
-                    <td className="py-4 px-6 text-right">
-                      {deleteConfirmId === emp._id ? (
-                        <div className="flex justify-end items-center gap-1.5">
-                          <button
-                            onClick={() => handleDelete(emp._id)}
-                            disabled={deleteLoading}
-                            className="bg-red-500 hover:bg-red-600 text-white text-xs font-semibold px-2.5 py-1 rounded-lg transition-all cursor-pointer"
-                          >
-                            Confirm
-                          </button>
-                          <button
-                            onClick={() => setDeleteConfirmId(null)}
-                            disabled={deleteLoading}
-                            className="bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold px-2.5 py-1 rounded-lg transition-all cursor-pointer"
-                          >
-                            Cancel
-                          </button>
-                        </div>
-                      ) : (
-                        <div className="flex items-center justify-end">
-                          <button
-                            onClick={() => setDeleteConfirmId(emp._id)}
-                            disabled={user.id === emp._id}
-                            className={`text-xs font-bold px-3 py-1 rounded-lg border transition-all cursor-pointer ${
-                              user.id === emp._id
-                                ? 'border-gray-100 bg-white text-gray-300 cursor-not-allowed'
-                                : 'border-red-100 bg-white text-red-500 hover:bg-red-50 hover:border-red-200'
-                            }`}
-                          >
-                            Delete
-                          </button>
-                        </div>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-                {employees.length === 0 && (
-                  <tr>
-                    <td colSpan="6" className="text-center py-16">
-                      <p className="text-sm font-medium text-[#392634]">No employees found</p>
-                      <p className="text-xs text-[#9C8195] mt-1">Click Add Employee to register a new user.</p>
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+                          </div>
+                        </td>
+                        <td className="py-4 px-6">
+                          <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold ${
+                            emp.role === 'Admin' ? 'bg-red-50 text-red-600' :
+                            emp.role === 'HR' ? 'bg-[#F4EFF2] text-[#714B67]' :
+                            'bg-slate-100 text-slate-700'
+                          }`}>
+                            {emp.role}
+                          </span>
+                        </td>
+                        <td className="py-4 px-6 text-right">
+                          {deleteConfirmId === emp._id ? (
+                            <div className="flex justify-end items-center gap-1.5">
+                              <button
+                                onClick={() => handleDelete(emp._id)}
+                                disabled={deleteLoading}
+                                className="bg-red-500 hover:bg-red-600 text-white text-xs font-semibold px-2.5 py-1 rounded-lg transition-all cursor-pointer"
+                              >
+                                Confirm
+                              </button>
+                              <button
+                                onClick={() => setDeleteConfirmId(null)}
+                                disabled={deleteLoading}
+                                className="bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold px-2.5 py-1 rounded-lg transition-all cursor-pointer"
+                              >
+                                Cancel
+                              </button>
+                            </div>
+                          ) : (
+                            <div className="flex items-center justify-end">
+                              <button
+                                onClick={() => setDeleteConfirmId(emp._id)}
+                                disabled={user.id === emp._id}
+                                className={`text-xs font-bold px-3 py-1 rounded-lg border transition-all cursor-pointer ${
+                                  user.id === emp._id
+                                    ? 'border-gray-100 bg-white text-gray-300 cursor-not-allowed'
+                                    : 'border-red-100 bg-white text-red-500 hover:bg-red-50 hover:border-red-200'
+                                }`}
+                              >
+                                Delete
+                              </button>
+                            </div>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                    {employees.length === 0 && (
+                      <tr>
+                        <td colSpan="6" className="text-center py-16">
+                          <p className="text-sm font-medium text-[#392634]">No employees found</p>
+                          <p className="text-xs text-[#9C8195] mt-1">Click Add Employee to register a new user.</p>
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
         )}
+        {activeTab === 'attendance' && <AdminAttendanceTable />}
+        {activeTab === 'leaves' && <AdminLeaveTable />}
       </div>
     </div>
   );

@@ -61,17 +61,7 @@ const AdminLeaveTable = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#f4f1f3] py-12 px-6">
-      <div className="max-w-5xl mx-auto">
-
-        {/* Page Title */}
-        <div className="mb-8">
-          <h1 className="text-2xl font-bold text-[#392634]">Time Off Requests</h1>
-          <p className="text-[#9C8195] mt-1">Review and manage all employee leave requests</p>
-        </div>
-
-        {/* Card */}
-        <div className="bg-white rounded-2xl shadow-[0_1px_3px_rgba(113,75,103,0.08)] overflow-hidden">
+    <div className="bg-white rounded-2xl shadow-[0_1px_3px_rgba(113,75,103,0.08)] border border-[#F1EDF0] overflow-hidden">
 
           {/* Card Header */}
           <div className="px-8 py-5 border-b border-[#F1EDF0] flex items-center justify-between">
@@ -172,8 +162,6 @@ const AdminLeaveTable = () => {
             </tbody>
           </table>
         </div>
-      </div>
-    </div>
   );
 };
 
