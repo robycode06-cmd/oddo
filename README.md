@@ -34,7 +34,7 @@ Managing workforce data efficiently is critical for modern enterprises. This pro
 Meet the developers behind this project:
 
 | Name | GitHub Profile |
-| :--- | :--- | :--- |
+| :--- | :--- |
 | **Sanjay** | [@sanjay-profile](#) |
 | **Suryapratap**| [@suryapratap-profile](#) |
 | **Aditya** | [@aditya-profile](#) |
