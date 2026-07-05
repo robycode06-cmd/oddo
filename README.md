@@ -35,10 +35,10 @@ Meet the developers behind this project:
 
 | Name | Role / Focus | GitHub Profile |
 | :--- | :--- | :--- |
-| **Sanjay** | Full-Stack Developer / Odoo Modules | [@sanjay-profile](#) |
-| **Suryapratap** | Frontend & UI/UX Specialist | [@suryapratap-profile](#) |
-| **Aditya** | QA Engineer & Documentation | [@aditya-profile](#) |
-| **Tilak** | Database Management | [@tilak-profile](#) |
+| **Sanjay** | [@sanjay-profile](#) |
+| **Suryapratap**| [@suryapratap-profile](#) |
+| **Aditya** | [@aditya-profile](#) |
+| **Tilak** | [@tilak-profile](#) |
 
 ## 🚀 Getting Started
 
