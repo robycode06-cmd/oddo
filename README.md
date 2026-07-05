@@ -24,9 +24,9 @@ Managing workforce data efficiently is critical for modern enterprises. This pro
 
 ## 🛠️ Tech Stack
 
-- **Backend / Platform:** Odoo Framework (Python)
-- **Database:** PostgreSQL
-- **Frontend:** QWeb templates, XML, JavaScript (OWL Framework)
+- **Backend / Platform:** Node.js Express
+- **Database:** MongoDB
+- **Frontend:** React tailwind
 - **Deployment & Tools:** Git, GitHub
 
 ## 👥 The Team
@@ -44,10 +44,6 @@ Meet the developers behind this project:
 
 Follow these steps to set up and run the project locally.
 
-### Prerequisites
-- Python 3.10+
-- PostgreSQL
-- Odoo 16.0 or 17.0 (specify your version)
 
 ### Installation
 
